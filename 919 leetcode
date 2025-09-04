@@ -1,0 +1,40 @@
+A complete binary tree is a binary tree in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible.
+Design an algorithm to insert a new node to a complete binary tree keeping it complete after the insertion.
+Implement the CBTInserter class:
+CBTInserter(TreeNode root) Initializes the data structure with the root of the complete binary tree.
+int insert(int v) Inserts a TreeNode into the tree with value Node.val == val so that the tree remains complete, and returns the value of the parent of the inserted TreeNode.
+TreeNode get_root() Returns the root node of the tree
+
+class CBTInserter {
+    private TreeNode root;
+    private Queue<TreeNode> q = new LinkedList<>();
+
+    public CBTInserter(TreeNode root) {
+        this.root = root;
+        Queue<TreeNode> temp = new LinkedList<>();
+        temp.offer(root);
+        while (!temp.isEmpty()) {
+            TreeNode node = temp.poll();
+            if (node.left == null || node.right == null) q.offer(node);
+            if (node.left != null) temp.offer(node.left);
+            if (node.right != null) temp.offer(node.right);
+        }
+    }
+
+    public int insert(int val) {
+        TreeNode parent = q.peek();
+        TreeNode newNode = new TreeNode(val);
+        if (parent.left == null) {
+            parent.left = newNode;
+        } else {
+            parent.right = newNode;
+            q.poll(); // parent is now full
+        }
+        q.offer(newNode);
+        return parent.val;
+    }
+
+    public TreeNode get_root() {
+        return root;
+    }
+}
