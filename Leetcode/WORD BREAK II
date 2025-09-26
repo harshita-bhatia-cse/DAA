@@ -1,0 +1,48 @@
+WORD BREAK II
+Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+SOLUTION:
+class Solution {
+    private HashMap<Integer, List<String>> memo;
+    private Set<String> dict;
+
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        dict = new HashSet<>(wordDict);
+        memo = new HashMap<>();
+        return dfs(s, 0);
+    } 
+
+    private List<String> dfs(String s, int start) {
+        if (memo.containsKey(start)) {
+            return memo.get(start);
+        }
+
+        List<String> results = new ArrayList<>();
+        int n = s.length();
+
+        if (start == n) {
+            results.add("");
+            return results;
+        }
+
+        for (int end = start + 1; end <= n; end++) {
+            String word = s.substring(start, end);
+
+            if (dict.contains(word)) {
+                List<String> subResults = dfs(s, end);
+                
+                for (String sub : subResults) {
+                    if (sub.isEmpty()) {
+                        results.add(word);
+                    } else {
+                        results.add(word + " " + sub);
+                    }
+                }
+            }
+        }
+
+        memo.put(start, results);
+        return results;
+    }
+}
